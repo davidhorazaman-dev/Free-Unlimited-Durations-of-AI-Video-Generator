@@ -1,15 +1,6 @@
-import os, threading, webbrowser
-from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
-HOST="127.0.0.1"; PORT=int(os.environ.get("AI_VIDEO_PORT","8000"))
-class QuietHandler(SimpleHTTPRequestHandler):
-    def log_message(self, format, *args): pass
+import os,webbrowser
+APP_URL=os.environ.get("AI_VIDEO_APP_URL","https://longestformaiexplainervideogenerator.ai")
 def main():
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    server=ThreadingHTTPServer((HOST,PORT),QuietHandler)
-    url=f"http://{HOST}:{PORT}/index.html"
-    threading.Timer(0.8,lambda:webbrowser.open(url)).start()
-    print(f"AI Explainer Video Generator: {url}")
-    try: server.serve_forever()
-    except KeyboardInterrupt: pass
-    finally: server.server_close()
+    webbrowser.open(APP_URL)
+    print("Opened production application: "+APP_URL)
 if __name__=="__main__": main()
