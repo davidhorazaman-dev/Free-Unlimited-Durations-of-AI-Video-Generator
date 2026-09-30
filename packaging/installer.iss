@@ -1,5 +1,5 @@
 #define AppName "Free Unlimited-Durations AI Explainer Video Generator"
-#define AppVersion "1.0.0"
+#define AppVersion "1.1.0"
 #define AppPublisher "davidhorazaman-dev"
 #define AppExeName "Free-Unlimited-Durations-AI-Video-Generator.exe"
 [Setup]
