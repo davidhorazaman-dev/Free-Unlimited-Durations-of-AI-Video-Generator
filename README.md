@@ -1,21 +1,37 @@
-# Free Unlimited-Durations AI Explainer Video Generator
+# Longest Form AI Explainer Video Generator
 
-Long-form explainer-video workbench using scene-based rendering. “Unlimited duration” means the project can contain arbitrarily many scenes; individual AI providers, hardware, storage, quotas, and render limits still apply.
+Production-oriented long-form AI explainer video workbench for planning, agenting, generating, monitoring, and assembling arbitrarily long projects.
 
-## Features
-- Long-form script editor
-- Automatic scene segmentation
-- Duration estimation from words/minute
-- Scene generation queue with demo progress
-- Provider-agnostic architecture
-- Project JSON export
-- Static browser UI
-- Local Python server
+## Canonical web application
+https://longestformaiexplainervideogenerator.ai
 
-## Run
-`python server.py` then open `http://localhost:8000`.
+The product no longer treats localhost as its application server. The desktop launcher opens the canonical production web application, and the browser UI uses /api/v1 on that origin.
 
-## Production integration
-Keep API keys server-side. Implement a provider adapter that renders each scene independently, persists job state, retries failures, and assembles completed clips with a media pipeline such as FFmpeg.
+Unlimited duration means an unbounded project/timeline model. Actual generation remains subject to provider, account, compute, storage, network, and encoding limits.
+
+## Web UI
+- Plan: script analysis, duration estimates, scene segmentation and shot planning.
+- Agent: server-side planning/agent job creation, progress polling and cancellation.
+- Generate: job monitoring, progress and final output links.
+- Provider-agnostic architecture with credentials kept server-side.
+
+## API contract
+GET /api/v1/health
+POST /api/v1/projects
+POST /api/v1/projects/{projectId}/plan
+POST /api/v1/projects/{projectId}/agent
+GET /api/v1/jobs/{jobId}
+POST /api/v1/jobs/{jobId}/cancel
+GET /api/v1/projects/{projectId}/output
+
+See api-contract.json. The repository provides the frontend and deployment contract; provider credentials and rendering workers belong behind the production API.
+
+## Deployment
+deploy/nginx.conf documents production routing: static assets are served directly and /api/ is forwarded to the private API service. Dockerfile provides a static web container.
+
+The desktop launcher intentionally does not create a localhost HTTP server.
+
+## Releases
+GitHub Actions builds native Windows, macOS and Linux artifacts. The executable is a production-site launcher rather than a local web server.
 
 MIT License.
