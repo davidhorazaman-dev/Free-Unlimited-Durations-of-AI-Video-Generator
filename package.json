@@ -1,0 +1,1 @@
+{"name":"free-unlimited-durations-ai-video-generator","version":"1.0.0","private":false,"description":"Long-form AI explainer video generator with scene-based rendering","scripts":{"start":"python server.py"}}

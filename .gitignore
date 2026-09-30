@@ -1,0 +1,1 @@
+__pycache__/\n*.py[cod]\n.env\n.env.*\nnode_modules/\ndist/\nbuild/\n.DS_Store\n*.log\n
