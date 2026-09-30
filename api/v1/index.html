@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Longest Form AI Explainer Video Generator API v1 Web UI">
+<meta name="theme-color" content="#07101e">
+<title>Longest Form AI Explainer Video Generator · API v1</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="../../">Longest Form AI Explainer Video Generator</a>
+  <span class="version">API v1</span>
+</header>
+<main class="shell">
+  <section class="hero">
+    <p class="eyebrow">GITHUB WEBSITE · API WEB UI</p>
+    <h1>/api/v1</h1>
+    <p class="subtitle">A static browser interface for inspecting and testing the production API contract from the GitHub-hosted website.</p>
+    <div class="actions">
+      <button id="health">Check API health</button>
+      <span id="status" class="status">Status: not checked</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-heading"><div><p class="eyebrow">BASE ENDPOINT</p><h2>Production API</h2></div></div>
+    <code id="base"></code>
+    <p class="muted">This page is static. GitHub Pages can host this Web UI, but it cannot execute the private rendering workers itself. The API implementation must exist behind the production origin.</p>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">ENDPOINTS</p>
+    <h2>API v1 surface</h2>
+    <div id="endpoints" class="endpoint-list"></div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">REQUEST TESTER</p>
+    <h2>Safe read-only request</h2>
+    <label>Endpoint<select id="endpoint"><option value="/health">GET /health</option></select></label>
+    <button id="run">Run GET request</button>
+    <pre id="output">No request made.</pre>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">SECURITY</p>
+    <div class="security-grid">
+      <div><strong>No provider keys</strong><span>Credentials never belong in this GitHub-hosted page.</span></div>
+      <div><strong>Read-only tester</strong><span>This UI intentionally does not submit mutating requests.</span></div>
+      <div><strong>Server-side jobs</strong><span>Agenting, rendering, storage and FFmpeg remain backend responsibilities.</span></div>
+    </div>
+  </section>
+</main>
+<footer>Longest Form AI Explainer Video Generator · GitHub Web UI · API v1</footer>
+<script src="./app.js"></script>
+</body>
+</html>
