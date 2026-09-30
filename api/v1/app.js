@@ -1,4 +1,4 @@
-const API_BASE=(location.origin&&location.origin!=="null"?location.origin:"https://longestformaiexplainervideogenerator.ai")+"/api/v1";
+const API_BASE="https://longestformaiexplainervideogenerator.ai/api/v1";
 const endpoints=[
   ["GET","/health"],["POST","/projects"],["POST","/projects/{projectId}/plan"],
   ["POST","/projects/{projectId}/agent"],["GET","/jobs/{jobId}"],
