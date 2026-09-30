@@ -39,10 +39,10 @@ jobs:
         run: |
           choco install innosetup --yes --no-progress
           iscc packaging/installer.iss
-      - name: Assemble ZIP
+      - name: Assemble Windows package
         shell: pwsh
         env:
-          VARIANT: \${{ matrix.variant }}
+          VARIANT: ${{matrix.variant }}
         run: |
           New-Item -ItemType Directory -Force -Path out | Out-Null
           Copy-Item dist/*.exe "out/Free-Unlimited-Durations-AI-Video-Generator-Windows-$env:VARIANT.exe"
@@ -50,12 +50,15 @@ jobs:
           if ($env:VARIANT -eq "complete-full" -and (Test-Path "Output/*.exe")) { Copy-Item Output/*.exe out/ }
       - uses: actions/upload-artifact@v4
         with:
-          name: windows-\${{ matrix.variant }}
+          name: windows-${{matrix.variant }}
           path: out/*
   macos:
-    runs-on: macos-latest
     strategy:
-      matrix: {arch: [arm64, x64]}
+      matrix:
+        include:
+          - {arch: arm64, runner: macos-14}
+          - {arch: x64, runner: macos-13}
+    runs-on: ${{matrix.runner }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -63,7 +66,7 @@ jobs:
       - run: python -m pip install --upgrade pip pyinstaller
       - name: Build macOS app
         env:
-          ARCH: \${{ matrix.arch }}
+          ARCH: ${{matrix.arch }}
         run: |
           pyinstaller --noconfirm --clean --windowed --name "Free-Unlimited-Durations-AI-Video-Generator" desktop_launcher.py
           mkdir -p out
@@ -72,7 +75,7 @@ jobs:
           tar -czf "out/Free-Unlimited-Durations-AI-Video-Generator-macOS-$ARCH.tar.gz" -C out "Free-Unlimited-Durations-AI-Video-Generator-$ARCH.app"
       - uses: actions/upload-artifact@v4
         with:
-          name: macos-\${{ matrix.arch }}
+          name: macos-${{matrix.arch }}
           path: out/*
   linux:
     runs-on: ubuntu-latest
@@ -100,6 +103,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with: {path: release-files, merge-multiple: true}
       - name: Publish GitHub Release
-        env: {GH_TOKEN: \${{ github.token }}}
+        env: {GH_TOKEN: ${{github.token }}
         run: |
-          gh release create "\${GITHUB_REF_NAME}" release-files/* --repo "\${GITHUB_REPOSITORY}" --title "Free Unlimited-Durations AI Video Generator \${GITHUB_REF_NAME}" --generate-notes
+          gh release create "${GITHUB_REF_NAME}" release-files/* --repo "${GITHUB_REPOSITORY}" --title "Free Unlimited-Durations AI Video Generator ${GITHUB_REF_NAME}" --generate-notes
