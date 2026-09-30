@@ -5,7 +5,7 @@ on:
       version:
         description: "Release version"
         required: true
-        default: "1.0.0"
+        default: "1.1.0"
   push:
     tags: ["v*.*.*"]
 permissions:
@@ -31,8 +31,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: python -m pip install --upgrade pip pyinstaller
-      - name: Build executable
-        run: pyinstaller --noconfirm --clean --onefile --name Free-Unlimited-Durations-AI-Video-Generator desktop_launcher.py
+      - run: pyinstaller --noconfirm --clean --onefile --name Free-Unlimited-Durations-AI-Video-Generator desktop_launcher.py
       - name: Build Complete Setup
         if: matrix.variant == 'complete-full'
         shell: pwsh
@@ -42,7 +41,7 @@ jobs:
       - name: Assemble Windows package
         shell: pwsh
         env:
-          VARIANT: ${{matrix.variant }}
+          VARIANT: ${{ matrix.variant }}
         run: |
           New-Item -ItemType Directory -Force -Path out | Out-Null
           Copy-Item dist/*.exe "out/Free-Unlimited-Durations-AI-Video-Generator-Windows-$env:VARIANT.exe"
@@ -50,7 +49,7 @@ jobs:
           if ($env:VARIANT -eq "complete-full" -and (Test-Path "Output/*.exe")) { Copy-Item Output/*.exe out/ }
       - uses: actions/upload-artifact@v4
         with:
-          name: windows-${{matrix.variant }}
+          name: windows-${{ matrix.variant }}
           path: out/*
   macos:
     strategy:
@@ -58,7 +57,7 @@ jobs:
         include:
           - {arch: arm64, runner: macos-14}
           - {arch: x64, runner: macos-13}
-    runs-on: ${{matrix.runner }}
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -66,7 +65,7 @@ jobs:
       - run: python -m pip install --upgrade pip pyinstaller
       - name: Build macOS app
         env:
-          ARCH: ${{matrix.arch }}
+          ARCH: ${{ matrix.arch }}
         run: |
           pyinstaller --noconfirm --clean --windowed --name "Free-Unlimited-Durations-AI-Video-Generator" desktop_launcher.py
           mkdir -p out
@@ -75,7 +74,7 @@ jobs:
           tar -czf "out/Free-Unlimited-Durations-AI-Video-Generator-macOS-$ARCH.tar.gz" -C out "Free-Unlimited-Durations-AI-Video-Generator-$ARCH.app"
       - uses: actions/upload-artifact@v4
         with:
-          name: macos-${{matrix.arch }}
+          name: macos-${{ matrix.arch }}
           path: out/*
   linux:
     runs-on: ubuntu-latest
@@ -89,7 +88,8 @@ jobs:
           pyinstaller --noconfirm --clean --onefile --name Free-Unlimited-Durations-AI-Video-Generator desktop_launcher.py
           mkdir -p out/bundle
           cp dist/Free-Unlimited-Durations-AI-Video-Generator out/bundle/
-          cp README.md LICENSE VERSION index.html styles.css app.js server.py desktop_launcher.py out/bundle/
+          cp README.md LICENSE VERSION index.html styles.css app.js api-contract.json desktop_launcher.py package.json out/bundle/
+          cp -r deploy packaging out/bundle/
           chmod +x out/bundle/Free-Unlimited-Durations-AI-Video-Generator
           (cd out && zip -r Free-Unlimited-Durations-AI-Video-Generator-Linux.zip bundle)
           tar -czf out/Free-Unlimited-Durations-AI-Video-Generator-Linux.tar.gz -C out bundle
@@ -104,6 +104,6 @@ jobs:
         with: {path: release-files, merge-multiple: true}
       - name: Publish GitHub Release
         env:
-          GH_TOKEN: ${{ github.token }}}
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${GITHUB_REF_NAME}" release-files/* --repo "${GITHUB_REPOSITORY}" --title "Free Unlimited-Durations AI Video Generator ${GITHUB_REF_NAME}" --generate-notes
