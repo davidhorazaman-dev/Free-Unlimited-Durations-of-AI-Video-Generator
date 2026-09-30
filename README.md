@@ -15,6 +15,13 @@ Unlimited duration means an unbounded project/timeline model. Actual generation 
 - Generate: job monitoring, progress and final output links.
 - Provider-agnostic architecture with credentials kept server-side.
 
+## API v1 Web UI
+The repository now includes a GitHub-hosted static API Web UI at `/api/v1/`. When the custom domain is configured for the GitHub website, its canonical page is:
+
+https://longestformaiexplainervideogenerator.ai/api/v1/
+
+The Web UI documents the API v1 surface and provides a read-only `GET /health` tester. GitHub Pages hosts the interface only; it does not run private AI rendering workers or backend processes.
+
 ## API contract
 GET /api/v1/health
 POST /api/v1/projects
