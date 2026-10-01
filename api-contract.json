@@ -1,1 +1,23 @@
-{"version":"1.0","basePath":"/api/v1","endpoints":{"health":{"method":"GET","path":"/health"},"createProject":{"method":"POST","path":"/projects"},"planProject":{"method":"POST","path":"/projects/{projectId}/plan"},"startAgent":{"method":"POST","path":"/projects/{projectId}/agent"},"job":{"method":"GET","path":"/jobs/{jobId}"},"cancelJob":{"method":"POST","path":"/jobs/{jobId}/cancel"},"output":{"method":"GET","path":"/projects/{projectId}/output"}},"rules":["Provider credentials are server-side only.","Long duration is represented as a scene graph and job state, not one unbounded provider request.","Mutating requests must be authenticated and authorized.","Render workers should retry transient provider failures and persist checkpoints before assembly."]}
+{
+  "version":"2.0",
+  "basePath":"/api/v1",
+  "frontend":"GitHub Pages",
+  "perPage":60,
+  "features":["explainer","image-to-video","text-to-video","video-to-video","featurettes","images","audio","sound-toggle","subtitles","dubbing","avatars","storyboards","B-roll","VFX","upscaling","frame-interpolation","timeline-assembly","batch-generation"],
+  "resolutions":["360p","480p","720p","1080p","2160p"],
+  "endpoints":{
+    "health":{"method":"GET","path":"/health"},
+    "createProject":{"method":"POST","path":"/projects"},
+    "startAgent":{"method":"POST","path":"/projects/{projectId}/agent"},
+    "job":{"method":"GET","path":"/jobs/{jobId}"},
+    "cancelJob":{"method":"POST","path":"/jobs/{jobId}/cancel"},
+    "output":{"method":"GET","path":"/projects/{projectId}/output"}
+  },
+  "security":{
+    "providerKeys":"server-side-only",
+    "githubPagesSecrets":"never-expose",
+    "cors":"allow the GitHub Pages/custom-domain origin on the real API server",
+    "authentication":"required for mutating endpoints"
+  },
+  "deploymentNote":"GitHub Pages is static hosting. A real API requires an external HTTPS backend or serverless runtime; this repository does not contain provider credentials or a runnable rendering backend."
+}
