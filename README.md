@@ -1,44 +1,32 @@
-# Longest Form AI Explainer Video Generator
+# Longest Form AI Video Generator
 
-Production-oriented long-form AI explainer video workbench for planning, agenting, generating, monitoring, and assembling arbitrarily long projects.
+Version 2.0.0 GitHub-hosted web UI with **60 AI features per page**.
 
-## Canonical web application
-https://longestformaiexplainervideogenerator.ai
+## Rebuilt studio
+The main page includes AI Explainer Video, Image-to-Video, Text-to-Video, Video-to-Video, Featurettes, video/image/audio workflows, an All-in-One Sound Toggle, 360p/480p/720p/1080p/2160p selections, storyboards, scenes, characters, B-roll, VFX, subtitles, dubbing, upscaling, frame interpolation, restoration, timeline assembly, batch generation and project export.
 
-The product no longer treats localhost as its application server. The desktop launcher opens the canonical production web application, and the browser UI uses /api/v1 on that origin.
+## API / Fetch repair
+The browser adapter no longer treats a GitHub Pages HTML response as a successful API response. A health request must return JSON; otherwise the UI reports that the API is unavailable.
 
-Unlimited duration means an unbounded project/timeline model. Actual generation remains subject to provider, account, compute, storage, network, and encoding limits.
+The production API base is configurable with `?api=https://your-api.example/api/v1`. The default remains the canonical production API origin.
 
-## Web UI
-- Plan: script analysis, duration estimates, scene segmentation and shot planning.
-- Agent: server-side planning/agent job creation, progress polling and cancellation.
-- Generate: job monitoring, progress and final output links.
-- Provider-agnostic architecture with credentials kept server-side.
+## GitHub Pages limitation
+GitHub Pages is static hosting. It can host the frontend and the `/api/v1/` documentation UI, but it cannot run private AI rendering workers, FFmpeg, databases, queues or provider adapters.
 
-## API v1 Web UI
-The repository now includes a GitHub-hosted static API Web UI at `/api/v1/`. When the custom domain is configured for the GitHub website, its canonical page is:
-
-https://longestformaiexplainervideogenerator.ai/api/v1/
-
-The Web UI documents the API v1 surface and provides a read-only `GET /health` tester. GitHub Pages hosts the interface only; it does not run private AI rendering workers or backend processes.
+The repository **does not contain real provider API keys** and the frontend must never contain them. Real keys belong in server-side environment variables/secrets on the actual API backend. The API backend must allow CORS from the GitHub Pages/custom-domain origin.
 
 ## API contract
-GET /api/v1/health
-POST /api/v1/projects
-POST /api/v1/projects/{projectId}/plan
-POST /api/v1/projects/{projectId}/agent
-GET /api/v1/jobs/{jobId}
-POST /api/v1/jobs/{jobId}/cancel
-GET /api/v1/projects/{projectId}/output
+See `api-contract.json` for the v2 contract and security boundary.
 
-See api-contract.json. The repository provides the frontend and deployment contract; provider credentials and rendering workers belong behind the production API.
+Supported paths:
+- GET `/api/v1/health`
+- POST `/api/v1/projects`
+- POST `/api/v1/projects/{projectId}/agent`
+- GET `/api/v1/jobs/{jobId}`
+- POST `/api/v1/jobs/{jobId}/cancel`
+- GET `/api/v1/projects/{projectId}/output`
 
-## Deployment
-deploy/nginx.conf documents production routing: static assets are served directly and /api/ is forwarded to the private API service. Dockerfile provides a static web container.
-
-The desktop launcher intentionally does not create a localhost HTTP server.
-
-## Releases
-GitHub Actions builds native Windows, macOS and Linux artifacts. The executable is a production-site launcher rather than a local web server.
+## Unlimited duration model
+“Unlimited” means the project/timeline is modeled as a sequence of scenes and jobs rather than one unbounded provider request. Actual provider, account, compute, storage, network and encoding limits still apply.
 
 MIT License.
