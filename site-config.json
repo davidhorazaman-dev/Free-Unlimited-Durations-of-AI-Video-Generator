@@ -1,13 +1,16 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "productName": "Longest Form AI Explainer Video Generator",
   "productionWebsiteUrl": "https://longestformaiexplainervideogenerator.ai/",
   "githubPagesUrl": "https://davidhorazaman-dev.github.io/Free-Unlimited-Durations-of-AI-Video-Generator/",
   "apiDocumentationUrl": "https://longestformaiexplainervideogenerator.ai/api/v1/",
-  "apiBaseUrl": "",
+  "apiBaseUrl": "https://longestformaiexplainervideogenerator.ai",
+  "apiPath": "/api/v1",
+  "backendStatusPath": "/api/v1/status",
+  "backendConfiguredStatus": "backend configured",
   "hosting": {
     "frontend": "GitHub Pages + custom domain",
-    "backend": "Separate HTTPS service",
+    "backend": "HTTPS service behind reverse proxy",
     "apiBase": "/api/v1"
   },
   "durationModel": "unbounded-chunked-timeline",
