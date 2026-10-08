@@ -1,56 +1,50 @@
-name: Build and Publish All Packages
+name: Build Windows macOS Linux Applications
 on:
   workflow_dispatch:
     inputs:
       version:
         description: "Release version"
         required: true
-        default: "1.1.0"
+        default: "3.1.0"
   push:
     tags: ["v*.*.*"]
-permissions:
-  contents: write
+permissions: {contents: write}
 jobs:
   source:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build source archives
-        run: |
+      - run: |
           mkdir -p out
-          git archive --format=zip --output="out/Free-Unlimited-Durations-AI-Video-Generator-Source-Code.zip" HEAD
-          git archive --format=tar.gz --output="out/Free-Unlimited-Durations-AI-Video-Generator-Source-Code.tar.gz" HEAD
+          git archive --format=zip --output="out/Longest-Form-AI-Explainer-Video-Generator-Source.zip" HEAD
+          git archive --format=tar.gz --output="out/Longest-Form-AI-Explainer-Video-Generator-Source.tar.gz" HEAD
       - uses: actions/upload-artifact@v4
         with: {name: source-packages, path: out/*}
   windows:
     runs-on: windows-latest
-    strategy:
-      matrix: {variant: [standard, portable, full, complete-full]}
+    strategy: {matrix: {variant: [standard, portable, full, complete-full]}}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: python -m pip install --upgrade pip pyinstaller
       - run: pyinstaller --noconfirm --clean --onefile --name Free-Unlimited-Durations-AI-Video-Generator desktop_launcher.py
-      - name: Build Complete Setup
+      - name: Build Windows Complete Installer
         if: matrix.variant == 'complete-full'
         shell: pwsh
         run: |
           choco install innosetup --yes --no-progress
           iscc packaging/installer.iss
-      - name: Assemble Windows package
+      - name: Assemble Windows distribution
         shell: pwsh
-        env:
-          VARIANT: ${{ matrix.variant }}
+        env: {VARIANT: ${{ matrix.variant }}}
         run: |
           New-Item -ItemType Directory -Force -Path out | Out-Null
-          Copy-Item dist/*.exe "out/Free-Unlimited-Durations-AI-Video-Generator-Windows-$env:VARIANT.exe"
-          Compress-Archive -Path dist/*.exe -DestinationPath "out/Free-Unlimited-Durations-AI-Video-Generator-Windows-$env:VARIANT.zip" -Force
+          Copy-Item dist/*.exe "out/Longest-Form-AI-Explainer-Video-Generator-Windows-$env:VARIANT.exe"
+          Compress-Archive -Path dist/*.exe -DestinationPath "out/Longest-Form-AI-Explainer-Video-Generator-Windows-$env:VARIANT.zip" -Force
           if ($env:VARIANT -eq "complete-full" -and (Test-Path "Output/*.exe")) { Copy-Item Output/*.exe out/ }
       - uses: actions/upload-artifact@v4
-        with:
-          name: windows-${{ matrix.variant }}
-          path: out/*
+        with: {name: windows-${{ matrix.variant }}, path: out/*}
   macos:
     strategy:
       matrix:
@@ -63,38 +57,41 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: python -m pip install --upgrade pip pyinstaller
-      - name: Build macOS app
-        env:
-          ARCH: ${{ matrix.arch }}
+      - name: Build macOS application
+        env: {ARCH: ${{ matrix.arch }}}
         run: |
-          pyinstaller --noconfirm --clean --windowed --name "Free-Unlimited-Durations-AI-Video-Generator" desktop_launcher.py
+          pyinstaller --noconfirm --clean --windowed --name Longest-Form-AI-Explainer-Video-Generator desktop_launcher.py
           mkdir -p out
-          ditto "dist/Free-Unlimited-Durations-AI-Video-Generator.app" "out/Free-Unlimited-Durations-AI-Video-Generator-$ARCH.app"
-          ditto -c -k --sequesterRsrc --keepParent "out/Free-Unlimited-Durations-AI-Video-Generator-$ARCH.app" "out/Free-Unlimited-Durations-AI-Video-Generator-macOS-$ARCH.zip"
-          tar -czf "out/Free-Unlimited-Durations-AI-Video-Generator-macOS-$ARCH.tar.gz" -C out "Free-Unlimited-Durations-AI-Video-Generator-$ARCH.app"
+          ditto "dist/Longest-Form-AI-Explainer-Video-Generator.app" "out/Longest-Form-AI-Explainer-Video-Generator-$ARCH.app"
+          ditto -c -k --sequesterRsrc --keepParent "out/Longest-Form-AI-Explainer-Video-Generator-$ARCH.app" "out/Longest-Form-AI-Explainer-Video-Generator-macOS-$ARCH.zip"
+          tar -czf "out/Longest-Form-AI-Explainer-Video-Generator-macOS-$ARCH.tar.gz" -C out "Longest-Form-AI-Explainer-Video-Generator-$ARCH.app"
       - uses: actions/upload-artifact@v4
-        with:
-          name: macos-${{ matrix.arch }}
-          path: out/*
+        with: {name: macos-${{ matrix.arch }}, path: out/*}
   linux:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - {arch: x64, runner: ubuntu-latest}
+          - {arch: arm64, runner: ubuntu-24.04-arm}
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: python -m pip install --upgrade pip pyinstaller
-      - name: Build Linux packages
+      - name: Build Linux application
+        env: {ARCH: ${{ matrix.arch }}}
         run: |
-          pyinstaller --noconfirm --clean --onefile --name Free-Unlimited-Durations-AI-Video-Generator desktop_launcher.py
+          pyinstaller --noconfirm --clean --onefile --name Longest-Form-AI-Explainer-Video-Generator desktop_launcher.py
           mkdir -p out/bundle
-          cp dist/Free-Unlimited-Durations-AI-Video-Generator out/bundle/
-          cp README.md LICENSE VERSION index.html styles.css app.js api-contract.json desktop_launcher.py package.json out/bundle/
+          cp dist/Longest-Form-AI-Explainer-Video-Generator out/bundle/
+          cp README.md LICENSE VERSION index.html styles.css app.js api-contract.json site-config.json desktop_launcher.py package.json out/bundle/
           cp -r deploy packaging out/bundle/
-          chmod +x out/bundle/Free-Unlimited-Durations-AI-Video-Generator
-          (cd out && zip -r Free-Unlimited-Durations-AI-Video-Generator-Linux.zip bundle)
-          tar -czf out/Free-Unlimited-Durations-AI-Video-Generator-Linux.tar.gz -C out bundle
+          chmod +x out/bundle/Longest-Form-AI-Explainer-Video-Generator
+          (cd out && zip -r "Longest-Form-AI-Explainer-Video-Generator-Linux-$ARCH.zip" bundle)
+          tar -czf "out/Longest-Form-AI-Explainer-Video-Generator-Linux-$ARCH.tar.gz" -C out bundle
       - uses: actions/upload-artifact@v4
-        with: {name: linux, path: out/*}
+        with: {name: linux-${{ matrix.arch }}, path: out/*}
   release:
     needs: [source, windows, macos, linux]
     runs-on: ubuntu-latest
@@ -103,7 +100,5 @@ jobs:
       - uses: actions/download-artifact@v4
         with: {path: release-files, merge-multiple: true}
       - name: Publish GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release create "${GITHUB_REF_NAME}" release-files/* --repo "${GITHUB_REPOSITORY}" --title "Free Unlimited-Durations AI Video Generator ${GITHUB_REF_NAME}" --generate-notes
+        env: {GH_TOKEN: ${{ github.token }}}
+        run: gh release create "${GITHUB_REF_NAME}" release-files/* --repo "${GITHUB_REPOSITORY}" --title "Longest Form AI Explainer Video Generator ${GITHUB_REF_NAME}" --generate-notes

@@ -1,52 +1,33 @@
-# Longest Form AI Video Generator
+# Longest Form AI Explainer Video Generator
 
-**Mega Complete / Full Version architecture — v3.0.0**
+Mega Complete / Full Version — web studio, provider-neutral backend architecture and cross-platform application packaging.
 
-A provider-neutral long-form AI video studio supporting AI Text-to-Video, Image-to-Video, Photo-to-Video, Video-to-Video and All-in-One orchestration.
+## Official URLs
+- Production Website: https://longestformaiexplainervideogenerator.ai/
+- GitHub Pages: https://davidhorazaman-dev.github.io/Free-Unlimited-Durations-of-AI-Video-Generator/
+- API Console: https://longestformaiexplainervideogenerator.ai/api/v1/
 
-## Frontend
+## Rebuilt architecture
+1. Static Web Studio — GitHub Pages/custom domain.
+2. Production API — separate HTTPS Node.js service at /api/v1.
+3. Provider adapters — text-to-video, image-to-video, photo-to-video, video-to-video and all-in-one.
+4. Unbounded timeline — scenes/jobs can be appended without an application-level total-duration ceiling.
+5. Desktop distribution — Windows, macOS and Linux packages built by GitHub Actions.
 
-The GitHub Pages UI includes the existing 60-feature studio, 360p/480p/720p/1080p/2160p output choices, scene planning, audio controls, subtitles, dubbing, B-roll, VFX, restoration, timeline assembly, batch generation and project export.
+## Error corrections
+- GitHub Pages is never used as the JSON backend.
+- The website no longer assumes /api/v1 on the Pages origin is a live API.
+- Non-JSON API responses are detected and explained.
+- Production API URLs are configurable without exposing credentials.
+- Canonical custom-domain and GitHub.io URLs are declared in site-config.json.
+- 404.html redirects to the canonical website.
+- CI validates URLs, JSON, backend syntax, Python syntax and static-site smoke tests.
+- Nginx proxies /api/ to backend port 8787.
 
-## Backend
+## Distribution
+Windows x64: EXE/ZIP/Complete Installer
+macOS x64 + arm64: APP/ZIP/TAR.GZ
+Linux x64 + arm64: executable bundle/ZIP/TAR.GZ
+Source: ZIP/TAR.GZ
 
-A new backend runtime provides:
-
-- Provider registry and capability discovery
-- Project creation
-- Long-form scene orchestration
-- Retryable job architecture
-- Job progress and cancellation
-- Provider-neutral generation contracts
-- Output/project job inspection
-- Docker deployment
-
-Run locally:
-
-    cd backend
-    cp .env.example .env
-    npm start
-
-The API base is /api/v1.
-
-## Infinite Duration / Infinite Hours
-
-The product uses unbounded project duration. It does not submit one literally infinite API request. Instead, a project is an ordered timeline of independent scenes and jobs, allowing hours or longer projects to continue until available compute, storage, provider quota, bandwidth and encoding resources are exhausted.
-
-See docs/INFINITE-DURATION.md and docs/MEGA-COMPLETE-ARCHITECTURE.md.
-
-## Provider support
-
-The frontend is provider-neutral. New AI video generators are integrated through adapters implementing the contract in docs/PROVIDER-ADAPTER-SPEC.md.
-
-The repository intentionally includes only a mock provider by default. Real provider credentials belong in server-side environment variables and real adapters must use each provider's official API and current terms.
-
-## GitHub Pages limitation
-
-GitHub Pages is static hosting. It cannot execute the private rendering backend, FFmpeg workers, queues or provider credentials. Configure the frontend with ?api=https://YOUR-API-HOST/api/v1.
-
-## Security
-
-Never put AI provider keys in browser JavaScript, GitHub Pages, repository source, or public configuration.
-
-MIT License.
+“Infinite duration” is an unbounded chunked timeline, not a physically infinite render request. Real providers and infrastructure still impose finite resource limits.

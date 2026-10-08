@@ -1,26 +1,17 @@
 {
-  "version":"3.0",
+  "version":"3.1",
   "basePath":"/api/v1",
+  "websiteUrl":"https://longestformaiexplainervideogenerator.ai/",
+  "githubPagesUrl":"https://davidhorazaman-dev.github.io/Free-Unlimited-Durations-of-AI-Video-Generator/",
+  "apiConsoleUrl":"https://longestformaiexplainervideogenerator.ai/api/v1/",
   "durationModel":"unbounded-chunked-timeline",
-  "frontend":"GitHub Pages",
+  "frontend":"GitHub Pages + custom domain",
+  "backend":"separate HTTPS service",
   "perPage":60,
   "modes":["text-to-video","image-to-video","photo-to-video","video-to-video","all-in-one"],
   "features":["explainer","image-to-video","photo-to-video","text-to-video","video-to-video","featurettes","images","audio","sound-toggle","subtitles","dubbing","avatars","storyboards","B-roll","VFX","upscaling","frame-interpolation","timeline-assembly","batch-generation"],
   "resolutions":["360p","480p","720p","1080p","2160p"],
-  "endpoints":{
-    "health":{"method":"GET","path":"/health"},
-    "providers":{"method":"GET","path":"/providers"},
-    "createProject":{"method":"POST","path":"/projects"},
-    "startAgent":{"method":"POST","path":"/projects/{projectId}/agent"},
-    "job":{"method":"GET","path":"/jobs/{jobId}"},
-    "cancelJob":{"method":"POST","path":"/jobs/{jobId}/cancel"},
-    "output":{"method":"GET","path":"/projects/{projectId}/output"}
-  },
-  "security":{
-    "providerKeys":"server-side-only",
-    "githubPagesSecrets":"never-expose",
-    "cors":"allow the GitHub Pages/custom-domain origin on the real API server",
-    "authentication":"required for mutating endpoints in production"
-  },
-  "deploymentNote":"GitHub Pages is static hosting. The backend is a separate HTTPS service. Actual provider, account, compute, storage, network and encoding limits still apply."
+  "endpoints":{"health":{"method":"GET","path":"/health"},"providers":{"method":"GET","path":"/providers"},"createProject":{"method":"POST","path":"/projects"},"startAgent":{"method":"POST","path":"/projects/{projectId}/agent"},"job":{"method":"GET","path":"/jobs/{jobId}"},"cancelJob":{"method":"POST","path":"/jobs/{jobId}/cancel"},"output":{"method":"GET","path":"/projects/{projectId}/output"}},
+  "security":{"providerKeys":"server-side-only","githubPagesSecrets":"never-expose","cors":"allow the production website origin on the real API server","authentication":"required for mutating production endpoints"},
+  "deploymentNote":"GitHub Pages is static hosting; the rendering API is separate. Provider, account, compute, storage, network and encoding limits still apply."
 }

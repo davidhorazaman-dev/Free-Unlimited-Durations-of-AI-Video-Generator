@@ -1,57 +1,37 @@
-name: Deploy GitHub Web UI to .ai Website
-
+name: Deploy Full Website to GitHub Pages
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
+concurrency: {group: pages, cancel-in-progress: true}
 jobs:
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Validate static Pages bundle
+      - uses: actions/checkout@v4
+      - name: Validate complete Pages bundle
         shell: bash
         run: |
           set -euo pipefail
-          test -s index.html
-          test -s app.js
-          test -s styles.css
-          test -s CNAME
-          test -s api-contract.json
-          test -s api/v1/index.html
-          test -s api/v1/app.js
-          test -s api/v1/styles.css
-          test "$(wc -l < CNAME)" -eq 1
+          test -s index.html; test -s app.js; test -s styles.css; test -s site-config.json
+          test -s 404.html; test -s CNAME; test -s api-contract.json
+          test -s api/v1/index.html; test -s api/v1/app.js; test -s api/v1/styles.css
           grep -Fxq "longestformaiexplainervideogenerator.ai" CNAME
-          if grep -RInE 'apiBase\s*=.*longestformaiexplainervideogenerator\.ai|API_ORIGIN\s*:\s*["\x27]https://longestformaiexplainervideogenerator\.ai' index.html app.js api/v1 2>/dev/null; then
-            echo "ERROR: GitHub Pages bundle contains a hardcoded Pages-host API endpoint."
-            exit 1
-          fi
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload static website
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
+          grep -Fq "https://longestformaiexplainervideogenerator.ai/" index.html
+          grep -Fq "https://davidhorazaman-dev.github.io/Free-Unlimited-Durations-of-AI-Video-Generator/" site-config.json
+          grep -Fq "https://longestformaiexplainervideogenerator.ai/api/v1/" api/v1/index.html
+          python -m json.tool site-config.json >/dev/null
+          python -m json.tool api-contract.json >/dev/null
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: {path: .}
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
