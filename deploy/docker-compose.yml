@@ -1,0 +1,10 @@
+services:
+  api:
+    build:
+      context: ../backend
+    environment:
+      PORT: 8787
+      HOST: 0.0.0.0
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    ports:
+      - "8787:8787"
