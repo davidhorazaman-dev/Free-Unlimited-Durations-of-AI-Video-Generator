@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"Unbounded AI Video Project",
+  "type":"object",
+  "required":["title","durationMode"],
+  "properties":{
+    "title":{"type":"string"},
+    "durationMode":{"const":"unbounded"},
+    "mode":{"enum":["text-to-video","image-to-video","photo-to-video","video-to-video","all-in-one"]},
+    "resolution":{"enum":["360p","480p","720p","1080p","2160p"]},
+    "prompt":{"type":"string"},
+    "script":{"type":"string"},
+    "scenes":{"type":"array","items":{"type":"object","required":["id","prompt"],"properties":{"id":{"type":"string"},"prompt":{"type":"string"},"durationSeconds":{"type":"number","exclusiveMinimum":0}}}}
+  }
+}
