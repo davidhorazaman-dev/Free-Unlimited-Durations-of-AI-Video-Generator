@@ -1,0 +1,46 @@
+name: Validate Website And Applications
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "20"}
+      - name: Validate JSON
+        run: |
+          python -m json.tool package.json >/dev/null
+          python -m json.tool api-contract.json >/dev/null
+          python -m json.tool site-config.json >/dev/null
+          python -m json.tool schemas/project.schema.json >/dev/null
+      - name: Validate URLs and Pages files
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fxq "longestformaiexplainervideogenerator.ai" CNAME
+          grep -Fq "https://longestformaiexplainervideogenerator.ai/" index.html
+          grep -Fq "https://davidhorazaman-dev.github.io/Free-Unlimited-Durations-of-AI-Video-Generator/" site-config.json
+          test -s index.html; test -s app.js; test -s styles.css; test -s 404.html
+          test -s api/v1/index.html; test -s api/v1/app.js
+      - name: Backend syntax check
+        run: npm run backend:check
+      - name: Python syntax check
+        run: python -m py_compile desktop_launcher.py packaging/build_release.py
+      - name: Smoke-test static site
+        run: |
+          python -m http.server 8080 >/tmp/pages.log 2>&1 &
+          PID=$!
+          trap 'kill $PID' EXIT
+          sleep 2
+          curl -fsS http://127.0.0.1:8080/ >/dev/null
+          curl -fsS http://127.0.0.1:8080/site-config.json >/dev/null
+          curl -fsS http://127.0.0.1:8080/api/v1/ >/dev/null
